@@ -28,24 +28,31 @@ func NewTranslate(audioPath string, languageTag string, apiEndpoint string) *Tra
 func (t *Translate) Translate(fileName string) (string, error) {
 	log.Printf("Translate audio file %s to text\n", fileName)
 
-	// Define query parameters for the API
-	queryParams := map[string]string{
-		"task":     "transcribe",
-		"language": "en",
-		//"initial_prompt":  "translate from " + t.LanguageTag + " to english",
-		"encode": "true",
-		"output": "txt",
-		//"word_timestamps": "false",
-	}
+	/*
+		// Define query parameters for the API
+		queryParams := map[string]string{
+			"task":            "translate",
+			"language":        t.LanguageTag,
+			"initial_prompt":  "",
+			"encode":          "true",
+			"output":          "txt",
+			"word_timestamps": "false",
+		}
+	*/
 
 	// Create a buffer to store the multipart body
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
 
-	// Add query parameters to the request
-	for key, val := range queryParams {
-		_ = writer.WriteField(key, val)
-	}
+	/*
+		// Add the query parameters to the multipart form
+		for key, val := range queryParams {
+			err := writer.WriteField(key, val)
+			if err != nil {
+				return "", fmt.Errorf("error writing field: %v", err)
+			}
+		}
+	*/
 
 	// Add the audio file to the multipart form
 	audioFile, err := os.Open(t.AudioPath + "/" + fileName)
@@ -93,7 +100,7 @@ func (t *Translate) Translate(fileName string) (string, error) {
 		_ = resp.Body.Close()
 	}()
 
-	// Read and return the response from the API
+	// Read and return the response from the API endpoint as a string
 	responseBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return "", fmt.Errorf("error reading response: %v", err)

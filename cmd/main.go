@@ -14,7 +14,7 @@ const (
 	silenceTimeout = 2 * time.Second
 	threshold      = -30
 	languageTag    = "en"
-	apiEndpoint    = "http://192.168.31.20:9001/asr"
+	apiEndpoint    = "http://192.168.31.20:9001/asr?task=translate&language=en"
 	fileName       = "records.wav"
 )
 
