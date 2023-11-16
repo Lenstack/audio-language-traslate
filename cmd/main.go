@@ -13,8 +13,8 @@ const (
 	audioPath      = "records"
 	silenceTimeout = 2 * time.Second
 	threshold      = -30
-	languageTag    = "en"
-	apiEndpoint    = "http://192.168.31.20:9001/asr"
+	languageTag    = "ja"
+	apiEndpoint    = "http://192.168.31.20:9000/asr"
 	fileName       = "records.wav"
 )
 
@@ -44,10 +44,17 @@ func main() {
 
 	// Convert audio to text using Own API
 	translate := internal.NewTranslate(audioPath, languageTag, apiEndpoint)
-	text, err := translate.Translate(fileName)
+	sentence, err := translate.Translate(fileName)
 	if err != nil {
 		log.Fatalf("Error translating records file: %v", err)
 	}
 
-	log.Printf("Translated text: %s\n", text)
+	// Speech text using Ai API ()
+	speech := internal.NewSpeech(audioPath)
+	err = speech.Speech(sentence)
+	if err != nil {
+		log.Fatalf("Error speaking sentence: %v", err)
+	}
+
+	log.Printf("Translated sentence: %s\n", sentence)
 }
