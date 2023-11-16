@@ -12,8 +12,8 @@ const (
 	ffmpegPath     = "ffmpeg/bin"
 	audioPath      = "records"
 	silenceTimeout = 2 * time.Second
-	threshold      = -30
-	languageTag    = "ja"
+	threshold      = -30 // dB
+	languageTag    = "en"
 	apiEndpoint    = "http://192.168.31.20:9000/asr"
 	fileName       = "records.wav"
 )
@@ -42,19 +42,25 @@ func main() {
 
 	log.Println("Recording stopped.")
 
-	// Convert audio to text using Own API
+	// Convert audio to text using Own API (Whisper)
 	translate := internal.NewTranslate(audioPath, languageTag, apiEndpoint)
 	sentence, err := translate.Translate(fileName)
 	if err != nil {
 		log.Fatalf("Error translating records file: %v", err)
 	}
 
-	// Speech text using Ai API ()
-	speech := internal.NewSpeech(audioPath)
+	log.Println("Speaking sentence: ", sentence)
+
+	// Speak translated sentence using Own API (Bark)
+	speech := internal.NewSpeech(audioPath, languageTag, apiEndpoint)
 	err = speech.Speech(sentence)
 	if err != nil {
 		log.Fatalf("Error speaking sentence: %v", err)
 	}
+
+	log.Println("Writing translated sentence to log file.")
+
+	// Write translated sentence to log file (for debugging)
 
 	log.Printf("Translated sentence: %s\n", sentence)
 }

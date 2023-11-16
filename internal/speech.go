@@ -7,11 +7,17 @@ import (
 )
 
 type Speech struct {
-	AudioPath string
+	AudioPath   string
+	LanguageTag string
+	APIEndpoint string
 }
 
-func NewSpeech(audioPath string) *Speech {
-	return &Speech{AudioPath: audioPath}
+func NewSpeech(audioPath string, languageTag string, apiEndpoint string) *Speech {
+	return &Speech{
+		AudioPath:   audioPath,
+		LanguageTag: languageTag,
+		APIEndpoint: apiEndpoint,
+	}
 }
 
 func (s *Speech) Speech(sentence string) error {
