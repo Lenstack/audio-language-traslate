@@ -67,4 +67,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error writing translated sentence to log file: %v", err)
 	}
+
+	log.Println("Done.")
 }
