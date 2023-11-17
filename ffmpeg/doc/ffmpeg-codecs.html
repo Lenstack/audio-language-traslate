@@ -1180,6 +1180,10 @@ profiles are documented in the relevant encoder documentation.
 </dd>
 <dt><span><samp>level <var>integer</var> (<em>encoding,audio,video</em>)</samp></span></dt>
 <dd>
+<p>Set the encoder level. This level depends on the specific codec, and
+might correspond to the profile level. It is set by default to
+&lsquo;<samp>unknown</samp>&rsquo;.
+</p>
 <p>Possible values:
 </p><dl compact="compact">
 <dt><span>&lsquo;<samp>unknown</samp>&rsquo;</span></dt>
@@ -2026,7 +2030,7 @@ Some present players (e.g., <em>mpv</em>) expect ASS format for ARIB caption.
 </p>
 <dl compact="compact">
 <dt><span>&lsquo;<samp>auto</samp>&rsquo;</span></dt>
-<dd><p>Automatically detect text encoding.
+<dd><p>Automatically detect text encoding (default).
 </p></dd>
 <dt><span>&lsquo;<samp>jis</samp>&rsquo;</span></dt>
 <dd><p>8bit-char JIS encoding defined in ARIB STD B24.
@@ -2042,9 +2046,6 @@ This encoding is used in South America for SBTVD / ISDB-Tb captions.
 </p></dd>
 </dl>
 
-<p>The default is <em>ass</em> as same as <em>libaribb24</em> decoder.
-Some present players (e.g., <em>mpv</em>) expect ASS format for ARIB caption.
-</p>
 </dd>
 <dt><span><samp>-font <var>font_name[,font_name2,...]</var></samp></span></dt>
 <dd><p>Specify comma-separated list of font family names to be used for <em>bitmap</em>
@@ -2067,13 +2068,6 @@ all the texts are displayed in a single ASS rectangle.
 <p>If your player cannot handle AVSubtitles with multiple ASS rectangles properly,
 set this option to <var>true</var> or define <code>ASS_SINGLE_RECT=1</code> to change
 default behavior at compilation.
-</p>
-</dd>
-<dt><span><samp>-replace_fullwidth_ascii <var>boolean</var></samp></span></dt>
-<dd><p>Specify whether to replace MSZ (Middle Size, half width) fullwidth
-alphanumerics with halfwidth alphanumerics.
-</p>
-<p>The default is <var>true</var>.
 </p>
 </dd>
 <dt><span><samp>-force_outline_text <var>boolean</var></samp></span></dt>
@@ -2103,6 +2097,31 @@ the indication by charactor style.
 </dd>
 <dt><span><samp>-replace_drcs <var>boolean</var></samp></span></dt>
 <dd><p>Specify whether to render replaced DRCS characters as Unicode characters.
+</p>
+<p>The default is <var>true</var>.
+</p>
+</dd>
+<dt><span><samp>-replace_msz_ascii <var>boolean</var></samp></span></dt>
+<dd><p>Specify whether to replace MSZ (Middle Size; half width) fullwidth
+alphanumerics with halfwidth alphanumerics.
+</p>
+<p>The default is <var>true</var>.
+</p>
+</dd>
+<dt><span><samp>-replace_msz_japanese <var>boolean</var></samp></span></dt>
+<dd><p>Specify whether to replace some MSZ (Middle Size; half width) fullwidth
+japanese special characters with halfwidth ones.
+</p>
+<p>The default is <var>true</var>.
+</p>
+</dd>
+<dt><span><samp>-replace_msz_glyph <var>boolean</var></samp></span></dt>
+<dd><p>Specify whether to replace MSZ (Middle Size; half width) characters
+with halfwidth glyphs if the fonts supports it.
+This option works under FreeType or DirectWrite renderer
+with Adobe-Japan1 compliant fonts.
+e.g., IBM Plex Sans JP, Morisawa BIZ UDGothic, Morisawa BIZ UDMincho,
+Yu Gothic, Yu Mincho, and Meiryo.
 </p>
 <p>The default is <var>true</var>.
 </p>
@@ -3442,7 +3461,8 @@ Default is disabled.
 <dd><p>Favor faithfulness to the input (the default).
 </p></dd>
 <dt><span>&lsquo;<samp>lowdelay</samp>&rsquo;</span></dt>
-<dd><p>Restrict to only the lowest delay modes.
+<dd><p>Restrict to only the lowest delay modes by disabling voice-optimized
+modes.
 </p></dd>
 </dl>
 
@@ -3451,7 +3471,9 @@ Default is disabled.
 <dd><p>Set cutoff bandwidth in Hz. The argument must be exactly one of the
 following: 4000, 6000, 8000, 12000, or 20000, corresponding to
 narrowband, mediumband, wideband, super wideband, and fullband
-respectively. The default is 0 (cutoff disabled).
+respectively. The default is 0 (cutoff disabled). Note that libopus
+forces a wideband cutoff for bitrates &lt; 15 kbps, unless CELT-only
+(<samp>application</samp> set to &lsquo;<samp>lowdelay</samp>&rsquo;) mode is used.
 </p>
 </dd>
 <dt><span><samp>mapping_family (<em>mapping_family</em>)</samp></span></dt>
@@ -5186,6 +5208,21 @@ kilobits/s.
 <dd><p>Number of reference frames each P-frame can use. The range is from <var>0-16</var>.
 </p>
 </dd>
+<dt><span><samp>level (<em>level</em>)</samp></span></dt>
+<dd><p>Set the <code>x264_param_t.i_level_idc</code> value in case the value is
+positive, it is ignored otherwise.
+</p>
+<p>This value can be set using the <code>AVCodecContext</code> API (e.g. by
+setting the <code>AVCodecContext</code> value directly), and is specified as
+an integer mapped on a corresponding level (e.g. the value 31 maps
+to H.264 level IDC &quot;3.1&quot;, as defined in the <code>x264_levels</code>
+table). It is ignored when set to a non positive value.
+</p>
+<p>Alternatively it can be set as a private option, overriding the value
+set in <code>AVCodecContext</code>, and in this case must be specified as
+the level IDC identifier (e.g. &quot;3.1&quot;), as defined by H.264 Annex A.
+</p>
+</dd>
 <dt><span><samp>sc_threshold (<em>scenecut</em>)</samp></span></dt>
 <dd><p>Sets the threshold for the scene change detection.
 </p>
@@ -5806,30 +5843,27 @@ which are not listed have no effect for the libxvid encoder.
 
 </dd>
 <dt><span><samp>trellis</samp></span></dt>
-<dt><span><samp>me_method</samp></span></dt>
-<dd><p>Set motion estimation method. Possible values in decreasing order of
+<dt><span><samp>me_quality</samp></span></dt>
+<dd><p>Set motion estimation quality level. Possible values in decreasing order of
 speed and increasing order of quality:
 </p>
 <dl compact="compact">
-<dt><span>&lsquo;<samp>zero</samp>&rsquo;</span></dt>
+<dt><span>&lsquo;<samp>0</samp>&rsquo;</span></dt>
 <dd><p>Use no motion estimation (default).
 </p>
 </dd>
-<dt><span>&lsquo;<samp>phods</samp>&rsquo;</span></dt>
-<dt><span>&lsquo;<samp>x1</samp>&rsquo;</span></dt>
-<dt><span>&lsquo;<samp>log</samp>&rsquo;</span></dt>
+<dt><span>&lsquo;<samp>1, 2</samp>&rsquo;</span></dt>
 <dd><p>Enable advanced diamond zonal search for 16x16 blocks and half-pixel
-refinement for 16x16 blocks. &lsquo;<samp>x1</samp>&rsquo; and &lsquo;<samp>log</samp>&rsquo; are aliases for
-&lsquo;<samp>phods</samp>&rsquo;.
+refinement for 16x16 blocks.
 </p>
 </dd>
-<dt><span>&lsquo;<samp>epzs</samp>&rsquo;</span></dt>
+<dt><span>&lsquo;<samp>3, 4</samp>&rsquo;</span></dt>
 <dd><p>Enable all of the things described above, plus advanced diamond zonal
-search for 8x8 blocks, half-pixel refinement for 8x8 blocks, and motion
-estimation on chroma planes.
+search for 8x8 blocks and half-pixel refinement for 8x8 blocks, also
+enable motion estimation on chroma planes for P and B-frames.
 </p>
 </dd>
-<dt><span>&lsquo;<samp>full</samp>&rsquo;</span></dt>
+<dt><span>&lsquo;<samp>5, 6</samp>&rsquo;</span></dt>
 <dd><p>Enable all of the things described above, plus extended 16x16 and 8x8
 blocks search.
 </p></dd>

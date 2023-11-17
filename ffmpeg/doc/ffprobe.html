@@ -84,7 +84,7 @@ ffprobe will show it.
 </p>
 <p>ffprobe output is designed to be easily parsable by a textual filter,
 and consists of one or more sections of a form defined by the selected
-writer, which is specified by the <samp>print_format</samp> option.
+writer, which is specified by the <samp>output_format</samp> option.
 </p>
 <p>Sections may contain other nested sections, and are identified by a
 name (which may be shared by other sections), and an unique
@@ -603,7 +603,7 @@ are decimal.
 options &quot;-unit -prefix -byte_binary_prefix -sexagesimal&quot;.
 </p>
 </dd>
-<dt><span><samp>-of, -print_format <var>writer_name</var>[=<var>writer_options</var>]</samp></span></dt>
+<dt><span><samp>-output_format, -of, -print_format <var>writer_name</var>[=<var>writer_options</var>]</samp></span></dt>
 <dd><p>Set the output printing format.
 </p>
 <p><var>writer_name</var> specifies the name of the writer, and
@@ -611,7 +611,7 @@ options &quot;-unit -prefix -byte_binary_prefix -sexagesimal&quot;.
 </p>
 <p>For example for printing the output in JSON format, specify:
 </p><div class="example">
-<pre class="example">-print_format json
+<pre class="example">-output_format json
 </pre></div>
 
 <p>For more details on the available output printing formats, see the

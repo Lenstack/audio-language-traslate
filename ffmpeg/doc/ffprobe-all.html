@@ -2023,7 +2023,7 @@ ffprobe will show it.
 </p>
 <p>ffprobe output is designed to be easily parsable by a textual filter,
 and consists of one or more sections of a form defined by the selected
-writer, which is specified by the <samp>print_format</samp> option.
+writer, which is specified by the <samp>output_format</samp> option.
 </p>
 <p>Sections may contain other nested sections, and are identified by a
 name (which may be shared by other sections), and an unique
@@ -2542,7 +2542,7 @@ are decimal.
 options &quot;-unit -prefix -byte_binary_prefix -sexagesimal&quot;.
 </p>
 </dd>
-<dt><span><samp>-of, -print_format <var>writer_name</var>[=<var>writer_options</var>]</samp></span></dt>
+<dt><span><samp>-output_format, -of, -print_format <var>writer_name</var>[=<var>writer_options</var>]</samp></span></dt>
 <dd><p>Set the output printing format.
 </p>
 <p><var>writer_name</var> specifies the name of the writer, and
@@ -2550,7 +2550,7 @@ options &quot;-unit -prefix -byte_binary_prefix -sexagesimal&quot;.
 </p>
 <p>For example for printing the output in JSON format, specify:
 </p><div class="example">
-<pre class="example">-print_format json
+<pre class="example">-output_format json
 </pre></div>
 
 <p>For more details on the available output printing formats, see the
@@ -4057,6 +4057,9 @@ following identifiers:
 <dt><span>&lsquo;<samp>6.0(front)</samp>&rsquo;</span></dt>
 <dd><p>FL+FR+FLC+FRC+SL+SR
 </p></dd>
+<dt><span>&lsquo;<samp>3.1.2</samp>&rsquo;</span></dt>
+<dd><p>FL+FR+FC+LFE+TFL+TFR
+</p></dd>
 <dt><span>&lsquo;<samp>hexagonal</samp>&rsquo;</span></dt>
 <dd><p>FL+FR+FC+BL+BR+BC
 </p></dd>
@@ -4084,7 +4087,7 @@ following identifiers:
 <dt><span>&lsquo;<samp>7.1(wide-side)</samp>&rsquo;</span></dt>
 <dd><p>FL+FR+FC+LFE+FLC+FRC+SL+SR
 </p></dd>
-<dt><span>&lsquo;<samp>7.1(top)</samp>&rsquo;</span></dt>
+<dt><span>&lsquo;<samp>5.1.2</samp>&rsquo;</span></dt>
 <dd><p>FL+FR+FC+LFE+BL+BR+TFL+TFR
 </p></dd>
 <dt><span>&lsquo;<samp>octagonal</samp>&rsquo;</span></dt>
@@ -4092,6 +4095,21 @@ following identifiers:
 </p></dd>
 <dt><span>&lsquo;<samp>cube</samp>&rsquo;</span></dt>
 <dd><p>FL+FR+BL+BR+TFL+TFR+TBL+TBR
+</p></dd>
+<dt><span>&lsquo;<samp>5.1.4</samp>&rsquo;</span></dt>
+<dd><p>FL+FR+FC+LFE+BL+BR+TFL+TFR+TBL+TBR
+</p></dd>
+<dt><span>&lsquo;<samp>7.1.2</samp>&rsquo;</span></dt>
+<dd><p>FL+FR+FC+LFE+BL+BR+SL+SR+TFL+TFR
+</p></dd>
+<dt><span>&lsquo;<samp>7.1.4</samp>&rsquo;</span></dt>
+<dd><p>FL+FR+FC+LFE+BL+BR+SL+SR+TFL+TFR+TBL+TBR
+</p></dd>
+<dt><span>&lsquo;<samp>7.2.3</samp>&rsquo;</span></dt>
+<dd><p>FL+FR+FC+LFE+BL+BR+SL+SR+TFL+TFR+TBC+LFE2
+</p></dd>
+<dt><span>&lsquo;<samp>9.1.4</samp>&rsquo;</span></dt>
+<dd><p>FL+FR+FC+LFE+BL+BR+FLC+FRC+SL+SR+TFL+TFR+TBL+TBR
 </p></dd>
 <dt><span>&lsquo;<samp>hexadecagonal</samp>&rsquo;</span></dt>
 <dd><p>FL+FR+FC+BL+BR+BC+SL+SR+WL+WR+TBL+TBR+TBC+TFC+TFL+TFR
@@ -5390,6 +5408,10 @@ profiles are documented in the relevant encoder documentation.
 </dd>
 <dt><span><samp>level <var>integer</var> (<em>encoding,audio,video</em>)</samp></span></dt>
 <dd>
+<p>Set the encoder level. This level depends on the specific codec, and
+might correspond to the profile level. It is set by default to
+&lsquo;<samp>unknown</samp>&rsquo;.
+</p>
 <p>Possible values:
 </p><dl compact="compact">
 <dt><span>&lsquo;<samp>unknown</samp>&rsquo;</span></dt>
@@ -6236,7 +6258,7 @@ Some present players (e.g., <em>mpv</em>) expect ASS format for ARIB caption.
 </p>
 <dl compact="compact">
 <dt><span>&lsquo;<samp>auto</samp>&rsquo;</span></dt>
-<dd><p>Automatically detect text encoding.
+<dd><p>Automatically detect text encoding (default).
 </p></dd>
 <dt><span>&lsquo;<samp>jis</samp>&rsquo;</span></dt>
 <dd><p>8bit-char JIS encoding defined in ARIB STD B24.
@@ -6252,9 +6274,6 @@ This encoding is used in South America for SBTVD / ISDB-Tb captions.
 </p></dd>
 </dl>
 
-<p>The default is <em>ass</em> as same as <em>libaribb24</em> decoder.
-Some present players (e.g., <em>mpv</em>) expect ASS format for ARIB caption.
-</p>
 </dd>
 <dt><span><samp>-font <var>font_name[,font_name2,...]</var></samp></span></dt>
 <dd><p>Specify comma-separated list of font family names to be used for <em>bitmap</em>
@@ -6277,13 +6296,6 @@ all the texts are displayed in a single ASS rectangle.
 <p>If your player cannot handle AVSubtitles with multiple ASS rectangles properly,
 set this option to <var>true</var> or define <code>ASS_SINGLE_RECT=1</code> to change
 default behavior at compilation.
-</p>
-</dd>
-<dt><span><samp>-replace_fullwidth_ascii <var>boolean</var></samp></span></dt>
-<dd><p>Specify whether to replace MSZ (Middle Size, half width) fullwidth
-alphanumerics with halfwidth alphanumerics.
-</p>
-<p>The default is <var>true</var>.
 </p>
 </dd>
 <dt><span><samp>-force_outline_text <var>boolean</var></samp></span></dt>
@@ -6313,6 +6325,31 @@ the indication by charactor style.
 </dd>
 <dt><span><samp>-replace_drcs <var>boolean</var></samp></span></dt>
 <dd><p>Specify whether to render replaced DRCS characters as Unicode characters.
+</p>
+<p>The default is <var>true</var>.
+</p>
+</dd>
+<dt><span><samp>-replace_msz_ascii <var>boolean</var></samp></span></dt>
+<dd><p>Specify whether to replace MSZ (Middle Size; half width) fullwidth
+alphanumerics with halfwidth alphanumerics.
+</p>
+<p>The default is <var>true</var>.
+</p>
+</dd>
+<dt><span><samp>-replace_msz_japanese <var>boolean</var></samp></span></dt>
+<dd><p>Specify whether to replace some MSZ (Middle Size; half width) fullwidth
+japanese special characters with halfwidth ones.
+</p>
+<p>The default is <var>true</var>.
+</p>
+</dd>
+<dt><span><samp>-replace_msz_glyph <var>boolean</var></samp></span></dt>
+<dd><p>Specify whether to replace MSZ (Middle Size; half width) characters
+with halfwidth glyphs if the fonts supports it.
+This option works under FreeType or DirectWrite renderer
+with Adobe-Japan1 compliant fonts.
+e.g., IBM Plex Sans JP, Morisawa BIZ UDGothic, Morisawa BIZ UDMincho,
+Yu Gothic, Yu Mincho, and Meiryo.
 </p>
 <p>The default is <var>true</var>.
 </p>
@@ -14885,14 +14922,20 @@ Allowed range is from 1 to 200.
 <dt><span>&lsquo;<samp>listen</samp>&rsquo;</span></dt>
 <dd><p>Output only isolated detection signal.
 </p></dd>
-<dt><span>&lsquo;<samp>cut</samp>&rsquo;</span></dt>
+<dt><span>&lsquo;<samp>cutbelow</samp>&rsquo;</span></dt>
+<dd><p>Cut frequencies below detection threshold.
+</p></dd>
+<dt><span>&lsquo;<samp>cutabove</samp>&rsquo;</span></dt>
 <dd><p>Cut frequencies above detection threshold.
 </p></dd>
-<dt><span>&lsquo;<samp>boost</samp>&rsquo;</span></dt>
-<dd><p>Boost frequencies bellow detection threshold.
+<dt><span>&lsquo;<samp>boostbelow</samp>&rsquo;</span></dt>
+<dd><p>Boost frequencies below detection threshold.
+</p></dd>
+<dt><span>&lsquo;<samp>boostabove</samp>&rsquo;</span></dt>
+<dd><p>Boost frequencies above detection threshold.
 </p></dd>
 </dl>
-<p>Default mode is &lsquo;<samp>cut</samp>&rsquo;.
+<p>Default mode is &lsquo;<samp>cutbelow</samp>&rsquo;.
 </p>
 </dd>
 <dt><span><samp>dftype</samp></span></dt>
@@ -14916,19 +14959,6 @@ Allowed range is from 1 to 200.
 <dt><span>&lsquo;<samp>highshelf</samp>&rsquo;</span></dt>
 </dl>
 <p>Default type is &lsquo;<samp>bell</samp>&rsquo;.
-</p>
-</dd>
-<dt><span><samp>direction</samp></span></dt>
-<dd><p>Set processing direction relative to threshold.
-</p><dl compact="compact">
-<dt><span>&lsquo;<samp>downward</samp>&rsquo;</span></dt>
-<dd><p>Boost/Cut if threshold is higher/lower than detected volume.
-</p></dd>
-<dt><span>&lsquo;<samp>upward</samp>&rsquo;</span></dt>
-<dd><p>Boost/Cut if threshold is lower/higher than detected volume.
-</p></dd>
-</dl>
-<p>Default direction is &lsquo;<samp>downward</samp>&rsquo;.
 </p>
 </dd>
 <dt><span><samp>auto</samp></span></dt>
@@ -29152,6 +29182,11 @@ to 1st output.
 <div class="example">
 <pre class="example">[in][blurin]feedback=x=0:y=0:w=100:h=100[out][blurout];[blurout]drawbox=x=0:y=0:w=100:h=100:t=100[blurin]
 </pre></div>
+
+</li><li> Pixelize rectangular part of video frame of size 100x100 with pixelize filter.
+<div class="example">
+<pre class="example">[in][blurin]feedback=x=320:y=240:w=100:h=100[out][blurout];[blurout]pixelize[blurin]
+</pre></div>
 </li></ul>
 
 <a name="fftdnoiz"></a>
@@ -32981,36 +33016,8 @@ After installing the library it can be enabled using:
 Default value: <code>&quot;version=vmaf_v0.6.1&quot;</code>
 </p>
 </dd>
-<dt><span><samp>model_path</samp></span></dt>
-<dd><p>Deprecated, use model=&rsquo;path=...&rsquo;.
-</p>
-</dd>
-<dt><span><samp>enable_transform</samp></span></dt>
-<dd><p>Deprecated, use model=&rsquo;enable_transform=true&rsquo;.
-</p>
-</dd>
-<dt><span><samp>phone_model</samp></span></dt>
-<dd><p>Deprecated, use model=&rsquo;enable_transform=true&rsquo;.
-</p>
-</dd>
-<dt><span><samp>enable_conf_interval</samp></span></dt>
-<dd><p>Deprecated, use model=&rsquo;enable_conf_interval=true&rsquo;.
-</p>
-</dd>
 <dt><span><samp>feature</samp></span></dt>
 <dd><p>A &lsquo;|&lsquo; delimited list of features. Each feature can be configured with a number of parameters.
-</p>
-</dd>
-<dt><span><samp>psnr</samp></span></dt>
-<dd><p>Deprecated, use feature=&rsquo;name=psnr&rsquo;.
-</p>
-</dd>
-<dt><span><samp>ssim</samp></span></dt>
-<dd><p>Deprecated, use feature=&rsquo;name=ssim&rsquo;.
-</p>
-</dd>
-<dt><span><samp>ms_ssim</samp></span></dt>
-<dd><p>Deprecated, use feature=&rsquo;name=ms_ssim&rsquo;.
 </p>
 </dd>
 <dt><span><samp>log_path</samp></span></dt>
@@ -41863,7 +41870,23 @@ the camera view absolutely still.
 <dd><p>Show fields and transforms in the resulting frames. It accepts an
 integer in the range 0-2. Default value is 0, which disables any
 visualization.
+</p>
+</dd>
+<dt><span><samp>fileformat</samp></span></dt>
+<dd><p>Format for the transforms data file to be written.
+Acceptable values are
+</p>
+<dl compact="compact">
+<dt><span>&lsquo;<samp>ascii</samp>&rsquo;</span></dt>
+<dd><p>Human-readable plain text
+</p>
+</dd>
+<dt><span>&lsquo;<samp>binary</samp>&rsquo;</span></dt>
+<dd><p>Binary format, roughly 40% smaller than <code>ascii</code>. (<em>default</em>)
 </p></dd>
+</dl>
+
+</dd>
 </dl>
 
 <a name="Examples-149"></a>
@@ -48794,6 +48817,7 @@ Default value is <code>640x512</code>.
 <dt><span><samp>sqrt</samp></span></dt>
 <dt><span><samp>cbrt</samp></span></dt>
 <dt><span><samp>qdrt</samp></span></dt>
+<dt><span><samp>fm</samp></span></dt>
 </dl>
 <p>Default value is <code>linear</code>.
 </p>
@@ -51189,6 +51213,7 @@ following image formats are supported:
 <tr><td width="40%">Lagarith</td><td width="10%"></td><td width="10%">X</td></tr>
 <tr><td width="40%">LCL (LossLess Codec Library) MSZH</td><td width="10%"></td><td width="10%">X</td></tr>
 <tr><td width="40%">LCL (LossLess Codec Library) ZLIB</td><td width="10%">E</td><td width="10%">E</td></tr>
+<tr><td width="40%">LEAD MCMP</td><td width="10%"></td><td width="10%">X</td></tr>
 <tr><td width="40%">LOCO</td><td width="10%"></td><td width="10%">X</td></tr>
 <tr><td width="40%">LucasArts SANM/Smush</td><td width="10%"></td><td width="10%">X</td><td width="40%">Used in LucasArts games / SMUSH animations.</td></tr>
 <tr><td width="40%">lossless MJPEG</td><td width="10%">X</td><td width="10%">X</td></tr>

@@ -11,6 +11,7 @@ import (
 const (
 	ffmpegPath     = "ffmpeg/bin"
 	audioPath      = "records"
+	logFilePath    = "logs/log.txt"
 	silenceTimeout = 2 * time.Second
 	threshold      = -30 // dB
 	languageTag    = "en"
@@ -61,6 +62,9 @@ func main() {
 	log.Println("Writing translated sentence to log file.")
 
 	// Write translated sentence to log file (for debugging)
-
-	log.Printf("Translated sentence: %s\n", sentence)
+	logger := internal.NewLogger(logFilePath)
+	err = logger.WriteSentenceToLogFile(sentence)
+	if err != nil {
+		log.Fatalf("Error writing translated sentence to log file: %v", err)
+	}
 }

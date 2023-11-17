@@ -748,6 +748,21 @@ processing. The default is 0 which means that the thread count will be
 determined by the number of available CPUs.
 </p>
 </dd>
+<dt><span><samp>-enable_vulkan</samp></span></dt>
+<dd><p>Use vulkan renderer rather than SDL builtin renderer. Depends on libplacebo.
+</p>
+</dd>
+<dt><span><samp>-vulkan_params</samp></span></dt>
+<dd>
+<p>Vulkan configuration using a list of <var>key</var>=<var>value</var> pairs separated by
+&quot;:&quot;.
+</p>
+</dd>
+<dt><span><samp>-hwaccel</samp></span></dt>
+<dd><p>Use HW accelerated decoding. Enable this option will enable vulkan renderer
+automatically.
+</p>
+</dd>
 </dl>
 
 <a name="While-playing"></a>

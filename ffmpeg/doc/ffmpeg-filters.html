@@ -2750,14 +2750,20 @@ Allowed range is from 1 to 200.
 <dt><span>&lsquo;<samp>listen</samp>&rsquo;</span></dt>
 <dd><p>Output only isolated detection signal.
 </p></dd>
-<dt><span>&lsquo;<samp>cut</samp>&rsquo;</span></dt>
+<dt><span>&lsquo;<samp>cutbelow</samp>&rsquo;</span></dt>
+<dd><p>Cut frequencies below detection threshold.
+</p></dd>
+<dt><span>&lsquo;<samp>cutabove</samp>&rsquo;</span></dt>
 <dd><p>Cut frequencies above detection threshold.
 </p></dd>
-<dt><span>&lsquo;<samp>boost</samp>&rsquo;</span></dt>
-<dd><p>Boost frequencies bellow detection threshold.
+<dt><span>&lsquo;<samp>boostbelow</samp>&rsquo;</span></dt>
+<dd><p>Boost frequencies below detection threshold.
+</p></dd>
+<dt><span>&lsquo;<samp>boostabove</samp>&rsquo;</span></dt>
+<dd><p>Boost frequencies above detection threshold.
 </p></dd>
 </dl>
-<p>Default mode is &lsquo;<samp>cut</samp>&rsquo;.
+<p>Default mode is &lsquo;<samp>cutbelow</samp>&rsquo;.
 </p>
 </dd>
 <dt><span><samp>dftype</samp></span></dt>
@@ -2781,19 +2787,6 @@ Allowed range is from 1 to 200.
 <dt><span>&lsquo;<samp>highshelf</samp>&rsquo;</span></dt>
 </dl>
 <p>Default type is &lsquo;<samp>bell</samp>&rsquo;.
-</p>
-</dd>
-<dt><span><samp>direction</samp></span></dt>
-<dd><p>Set processing direction relative to threshold.
-</p><dl compact="compact">
-<dt><span>&lsquo;<samp>downward</samp>&rsquo;</span></dt>
-<dd><p>Boost/Cut if threshold is higher/lower than detected volume.
-</p></dd>
-<dt><span>&lsquo;<samp>upward</samp>&rsquo;</span></dt>
-<dd><p>Boost/Cut if threshold is lower/higher than detected volume.
-</p></dd>
-</dl>
-<p>Default direction is &lsquo;<samp>downward</samp>&rsquo;.
 </p>
 </dd>
 <dt><span><samp>auto</samp></span></dt>
@@ -17017,6 +17010,11 @@ to 1st output.
 <div class="example">
 <pre class="example">[in][blurin]feedback=x=0:y=0:w=100:h=100[out][blurout];[blurout]drawbox=x=0:y=0:w=100:h=100:t=100[blurin]
 </pre></div>
+
+</li><li> Pixelize rectangular part of video frame of size 100x100 with pixelize filter.
+<div class="example">
+<pre class="example">[in][blurin]feedback=x=320:y=240:w=100:h=100[out][blurout];[blurout]pixelize[blurin]
+</pre></div>
 </li></ul>
 
 <a name="fftdnoiz"></a>
@@ -20846,36 +20844,8 @@ After installing the library it can be enabled using:
 Default value: <code>&quot;version=vmaf_v0.6.1&quot;</code>
 </p>
 </dd>
-<dt><span><samp>model_path</samp></span></dt>
-<dd><p>Deprecated, use model=&rsquo;path=...&rsquo;.
-</p>
-</dd>
-<dt><span><samp>enable_transform</samp></span></dt>
-<dd><p>Deprecated, use model=&rsquo;enable_transform=true&rsquo;.
-</p>
-</dd>
-<dt><span><samp>phone_model</samp></span></dt>
-<dd><p>Deprecated, use model=&rsquo;enable_transform=true&rsquo;.
-</p>
-</dd>
-<dt><span><samp>enable_conf_interval</samp></span></dt>
-<dd><p>Deprecated, use model=&rsquo;enable_conf_interval=true&rsquo;.
-</p>
-</dd>
 <dt><span><samp>feature</samp></span></dt>
 <dd><p>A &lsquo;|&lsquo; delimited list of features. Each feature can be configured with a number of parameters.
-</p>
-</dd>
-<dt><span><samp>psnr</samp></span></dt>
-<dd><p>Deprecated, use feature=&rsquo;name=psnr&rsquo;.
-</p>
-</dd>
-<dt><span><samp>ssim</samp></span></dt>
-<dd><p>Deprecated, use feature=&rsquo;name=ssim&rsquo;.
-</p>
-</dd>
-<dt><span><samp>ms_ssim</samp></span></dt>
-<dd><p>Deprecated, use feature=&rsquo;name=ms_ssim&rsquo;.
 </p>
 </dd>
 <dt><span><samp>log_path</samp></span></dt>
@@ -29728,7 +29698,23 @@ the camera view absolutely still.
 <dd><p>Show fields and transforms in the resulting frames. It accepts an
 integer in the range 0-2. Default value is 0, which disables any
 visualization.
+</p>
+</dd>
+<dt><span><samp>fileformat</samp></span></dt>
+<dd><p>Format for the transforms data file to be written.
+Acceptable values are
+</p>
+<dl compact="compact">
+<dt><span>&lsquo;<samp>ascii</samp>&rsquo;</span></dt>
+<dd><p>Human-readable plain text
+</p>
+</dd>
+<dt><span>&lsquo;<samp>binary</samp>&rsquo;</span></dt>
+<dd><p>Binary format, roughly 40% smaller than <code>ascii</code>. (<em>default</em>)
 </p></dd>
+</dl>
+
+</dd>
 </dl>
 
 <a name="Examples-134"></a>
@@ -36659,6 +36645,7 @@ Default value is <code>640x512</code>.
 <dt><span><samp>sqrt</samp></span></dt>
 <dt><span><samp>cbrt</samp></span></dt>
 <dt><span><samp>qdrt</samp></span></dt>
+<dt><span><samp>fm</samp></span></dt>
 </dl>
 <p>Default value is <code>linear</code>.
 </p>

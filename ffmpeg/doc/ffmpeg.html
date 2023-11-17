@@ -1653,7 +1653,6 @@ PSNR flag to the encoder instead, using <code>-flags +psnr</code>.
 <dt><span><samp>-force_key_frames[:<var>stream_specifier</var>] <var>time</var>[,<var>time</var>...] (<em>output,per-stream</em>)</samp></span></dt>
 <dt><span><samp>-force_key_frames[:<var>stream_specifier</var>] expr:<var>expr</var> (<em>output,per-stream</em>)</samp></span></dt>
 <dt><span><samp>-force_key_frames[:<var>stream_specifier</var>] source (<em>output,per-stream</em>)</samp></span></dt>
-<dt><span><samp>-force_key_frames[:<var>stream_specifier</var>] source_no_drop (<em>output,per-stream</em>)</samp></span></dt>
 <dd>
 <p><var>force_key_frames</var> can take arguments of the following form:
 </p>
@@ -1719,11 +1718,6 @@ starting from second 13:
 </dd>
 <dt><span><samp>source</samp></span></dt>
 <dd><p>If the argument is <code>source</code>, ffmpeg will force a key frame if
-the current frame being encoded is marked as a key frame in its source.
-</p>
-</dd>
-<dt><span><samp>source_no_drop</samp></span></dt>
-<dd><p>If the argument is <code>source_no_drop</code>, ffmpeg will force a key frame if
 the current frame being encoded is marked as a key frame in its source.
 In cases where this particular source frame has to be dropped,
 enforce the next available frame to become a key frame instead.
@@ -2604,9 +2598,19 @@ an output mpegts file:
 
 </dd>
 <dt><span><samp>-bsf[:<var>stream_specifier</var>] <var>bitstream_filters</var> (<em>output,per-stream</em>)</samp></span></dt>
-<dd><p>Set bitstream filters for matching streams. <var>bitstream_filters</var> is
-a comma-separated list of bitstream filters. Use the <code>-bsfs</code> option
-to get the list of bitstream filters.
+<dd><p>Apply bitstream filters to matching streams.
+</p>
+<p><var>bitstream_filters</var> is a comma-separated list of bitstream filter
+specifications. The specified bitstream filters are applied to coded packets in
+the order they are written in. Each bitstream filter specification is of the
+form
+</p><div class="example">
+<pre class="example"><var>filter</var>[=<var>optname0</var>=<var>optval0</var>:<var>optname1</var>=<var>optval1</var>:...]
+</pre></div>
+<p>Any of the &rsquo;,=:&rsquo; characters that are to be a part of an option value need to be
+escaped with a backslash.
+</p>
+<p>Use the <code>-bsfs</code> option to get the list of bitstream filters.
 </p><div class="example">
 <pre class="example">ffmpeg -i h264.mp4 -c:v copy -bsf:v h264_mp4toannexb -an out.h264
 </pre></div>
