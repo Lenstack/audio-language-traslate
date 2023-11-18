@@ -9,14 +9,16 @@ import (
 )
 
 const (
-	ffmpegPath     = "ffmpeg/bin"
-	audioPath      = "records"
-	logFilePath    = "logs/log.txt"
-	silenceTimeout = 2 * time.Second
-	threshold      = -30 // dB
-	languageTag    = "en"
-	apiEndpoint    = "http://192.168.31.20:9000/asr"
-	fileName       = "records.wav"
+	ffmpegPath        = "ffmpeg/bin"
+	audioPath         = "records"
+	logFilePath       = "logs/log.txt"
+	silenceTimeout    = 2 * time.Second
+	threshold         = -30 // dB
+	languageTag       = "en"
+	apiEndpoint       = "http://192.168.31.20:9000/asr"
+	apiEndpointSpeech = "http://192.168.31.20:8080/api/tts"
+	voice             = "en-us-libritts-low.onnx"
+	fileName          = "records.wav"
 )
 
 func main() {
@@ -53,7 +55,7 @@ func main() {
 	log.Println("Speaking sentence: ", sentence)
 
 	// Speak translated sentence using Own API (Bark)
-	speech := internal.NewSpeech(audioPath, languageTag, apiEndpoint)
+	speech := internal.NewSpeech(audioPath, languageTag, apiEndpointSpeech, voice)
 	err = speech.Speech(sentence)
 	if err != nil {
 		log.Fatalf("Error speaking sentence: %v", err)
