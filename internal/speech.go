@@ -96,7 +96,7 @@ func (s *Speech) Speech(sentence string) error {
 
 // Reproduce TODO: reproduce translated sentence sound to speakers
 func (s *Speech) Reproduce() error {
-	cmd := s.Command.ExecuteFFCommand("ffmpeg", []string{"-i", s.AudioPath + "/speech.wav", "-nodisp", "-autoexit", "-hide_banner", "-loglevel", "error", "-af", "volume=1.0", "output_device"})
+	cmd := s.Command.ExecuteFFCommand("ffplay", []string{"-nodisp", "-autoexit", "-hide_banner", "-loglevel", "error", "-af", "volume=1.0", s.AudioPath + "/speech.wav"})
 
 	err := cmd.Run()
 	if err != nil {

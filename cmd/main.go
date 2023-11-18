@@ -61,14 +61,12 @@ func main() {
 		log.Fatalf("Error speaking sentence: %v", err)
 	}
 
-	/*
-		log.Println("Reproducing translated sentence to speakers.")
-		// Reproduce translated sentence sound to speakers
-		err = speech.Reproduce()
-		if err != nil {
-			log.Fatalf("Error reproducing sentence sound: %v", err)
-		}
-	*/
+	log.Println("Reproducing translated sentence to speakers.")
+	// Reproduce translated sentence sound to speakers
+	err = speech.Reproduce()
+	if err != nil {
+		log.Fatalf("Error reproducing sentence sound: %v", err)
+	}
 
 	log.Println("Writing translated sentence to log file.")
 
