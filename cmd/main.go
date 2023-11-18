@@ -17,7 +17,7 @@ const (
 	languageTag       = "en"
 	apiEndpoint       = "http://192.168.31.20:9000/asr"
 	apiEndpointSpeech = "http://192.168.31.20:8080/api/tts"
-	voice             = "en-us-libritts-low.onnx"
+	voice             = "en-us-libritts-high.onnx"
 	fileName          = "records.wav"
 )
 
@@ -55,10 +55,17 @@ func main() {
 	log.Println("Speaking sentence: ", sentence)
 
 	// Speak translated sentence using Own API (Bark)
-	speech := internal.NewSpeech(audioPath, languageTag, apiEndpointSpeech, voice)
+	speech := internal.NewSpeech(ffmpegPath, audioPath, languageTag, apiEndpointSpeech, voice)
 	err = speech.Speech(sentence)
 	if err != nil {
 		log.Fatalf("Error speaking sentence: %v", err)
+	}
+
+	log.Println("Reproducing translated sentence to speakers.")
+	// Reproduce translated sentence sound to speakers
+	err = speech.Reproduce()
+	if err != nil {
+		log.Fatalf("Error reproducing sentence sound: %v", err)
 	}
 
 	log.Println("Writing translated sentence to log file.")

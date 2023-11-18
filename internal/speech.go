@@ -10,14 +10,16 @@ import (
 )
 
 type Speech struct {
+	Command     *Command
 	AudioPath   string
 	LanguageTag string
 	APIEndpoint string
 	Voice       string
 }
 
-func NewSpeech(audioPath string, languageTag string, apiEndpoint string, voice string) *Speech {
+func NewSpeech(ffmpegPath string, audioPath string, languageTag string, apiEndpoint string, voice string) *Speech {
 	return &Speech{
+		Command:     NewCommand(ffmpegPath),
 		AudioPath:   audioPath,
 		LanguageTag: languageTag,
 		APIEndpoint: apiEndpoint,
@@ -86,6 +88,17 @@ func (s *Speech) Speech(sentence string) error {
 
 	// Write the audio data to a file
 	err = ioutil.WriteFile(s.AudioPath+"/speech.wav", audioData, 0644)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// Reproduce TODO: reproduce translated sentence sound to speakers
+func (s *Speech) Reproduce() error {
+	cmd := s.Command.ExecuteFFCommand("ffmpeg", []string{"-i", s.AudioPath + "/speech.wav", "-nodisp", "-autoexit", "-hide_banner", "-loglevel", "error", "-af", "volume=1.0", "output_device"})
+
+	err := cmd.Run()
 	if err != nil {
 		return err
 	}
